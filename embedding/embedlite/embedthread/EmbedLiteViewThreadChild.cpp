@@ -19,6 +19,7 @@
 #include "nsIDocShell.h"
 #include "nsIFocusManager.h"
 #include "nsFocusManager.h"
+#include "nsIWebBrowserChrome.h"
 
 #include "nsIDOMWindowUtils.h"
 #include "nsPIDOMWindow.h"
@@ -185,7 +186,7 @@ EmbedLiteViewThreadChild::InitGeckoWindow(const uint32_t& parentId)
   nsCOMPtr<nsIDOMWindow> domWindow;
 
   mChrome = new WebBrowserChrome(this);
-  uint32_t aChromeFlags = 0; // View()->GetWindowFlags();
+  uint32_t aChromeFlags = nsIWebBrowserChrome::CHROME_PRIVATE_WINDOW; // View()->GetWindowFlags();
 
   mWebBrowser->SetContainerWindow(mChrome);
 
