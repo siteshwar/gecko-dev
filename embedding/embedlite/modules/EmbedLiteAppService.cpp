@@ -284,7 +284,8 @@ EmbedLiteAppService::ContentReceivedTouch(uint32_t aWinId, bool aPreventDefault)
 {
   EmbedLiteViewThreadChild* view = sGetViewById(aWinId);
   NS_ENSURE_TRUE(view, NS_ERROR_FAILURE);
-  view->SendContentReceivedTouch(ScrollableLayerGuid(0, 0, 0), aPreventDefault, 0);
+  fprintf(stderr, "aPreventDefault is : %d", aPreventDefault);
+  view->SendContentReceivedTouch(ScrollableLayerGuid(0, 0, 0), 0, aPreventDefault);
   return NS_OK;
 }
 
