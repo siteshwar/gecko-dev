@@ -61,8 +61,8 @@
 
 // #define APZC_ENABLE_RENDERTRACE
 
-#define APZC_LOG(...)
-// #define APZC_LOG(...) printf_stderr("APZC: " __VA_ARGS__)
+//#define APZC_LOG(...)
+#define APZC_LOG(...) printf_stderr("APZC: " __VA_ARGS__)
 #define APZC_LOG_FM(fm, prefix, ...) \
   APZC_LOG(prefix ":" \
            " i=(%ld %lld) cb=(%d %d %d %d) rcs=(%.3f %.3f) dp=(%.3f %.3f %.3f %.3f) dpm=(%.3f %.3f %.3f %.3f) um=%d " \
@@ -1926,6 +1926,8 @@ void AsyncPanZoomController::ContentReceivedTouch(bool aPreventDefault) {
 }
 
 void AsyncPanZoomController::CheckContentResponse() {
+  fprintf(stderr, "mTouchBlockState.mPreventDefault : %d", mTouchBlockState.mPreventDefault);
+
   bool canProceedToTouchState = true;
 
   if (mFrameMetrics.mMayHaveTouchListeners) {
