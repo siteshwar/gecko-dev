@@ -1,0 +1,58 @@
+From 5a69917b02681731a1f43c28b00dfae764492d73 Mon Sep 17 00:00:00 2001
+From: Siteshwar Vashisht <siteshwar@gmail.com>
+Date: Mon, 9 Nov 2015 14:32:49 +0530
+Subject: [PATCH] Do not check for private mode while notifying download status
+
+---
+ toolkit/components/downloads/nsDownloadManager.cpp | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
+
+diff --git a/toolkit/components/downloads/nsDownloadManager.cpp b/toolkit/components/downloads/nsDownloadManager.cpp
+index 7001851..a77f737 100644
+--- a/toolkit/components/downloads/nsDownloadManager.cpp
++++ b/toolkit/components/downloads/nsDownloadManager.cpp
+@@ -2876,34 +2876,27 @@ nsDownload::SetState(DownloadState aState)
+     case nsIDownloadManager::DOWNLOAD_DOWNLOADING:
+       // Only send the dl-start event to downloads that are actually starting.
+       if (oldState == nsIDownloadManager::DOWNLOAD_QUEUED) {
+-        if (!mPrivate)
+-          mDownloadManager->SendEvent(this, "dl-start");
++        mDownloadManager->SendEvent(this, "dl-start");
+       }
+       break;
+     case nsIDownloadManager::DOWNLOAD_FAILED:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-failed");
++      mDownloadManager->SendEvent(this, "dl-failed");
+       break;
+     case nsIDownloadManager::DOWNLOAD_SCANNING:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-scanning");
++      mDownloadManager->SendEvent(this, "dl-scanning");
+       break;
+     case nsIDownloadManager::DOWNLOAD_FINISHED:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-done");
++      mDownloadManager->SendEvent(this, "dl-done");
+       break;
+     case nsIDownloadManager::DOWNLOAD_BLOCKED_PARENTAL:
+     case nsIDownloadManager::DOWNLOAD_BLOCKED_POLICY:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-blocked");
++      mDownloadManager->SendEvent(this, "dl-blocked");
+       break;
+     case nsIDownloadManager::DOWNLOAD_DIRTY:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-dirty");
++      mDownloadManager->SendEvent(this, "dl-dirty");
+       break;
+     case nsIDownloadManager::DOWNLOAD_CANCELED:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-cancel");
++      mDownloadManager->SendEvent(this, "dl-cancel");
+       break;
+     default:
+       break;
+-- 
+2.4.3
+
