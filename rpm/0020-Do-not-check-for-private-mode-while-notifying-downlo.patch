@@ -1,0 +1,100 @@
+From 368c4bba3235c82bf1bbc69ba8aec1b6383c18b4 Mon Sep 17 00:00:00 2001
+From: Siteshwar Vashisht <siteshwar@gmail.com>
+Date: Mon, 9 Nov 2015 14:32:49 +0530
+Subject: [PATCH] Do not check for private mode while notifying download status
+
+---
+ toolkit/components/downloads/nsDownloadManager.cpp | 33 +++++++++++++---------
+ 1 file changed, 19 insertions(+), 14 deletions(-)
+
+diff --git a/toolkit/components/downloads/nsDownloadManager.cpp b/toolkit/components/downloads/nsDownloadManager.cpp
+index 7001851..c455a1a 100644
+--- a/toolkit/components/downloads/nsDownloadManager.cpp
++++ b/toolkit/components/downloads/nsDownloadManager.cpp
+@@ -2242,9 +2242,13 @@ nsDownloadManager::NotifyListenersOnDownloadStateChange(int16_t aOldState,
+ 
+   // Only privacy-aware listeners should receive notifications about private
+   // downloads, while non-privacy-aware listeners receive no sign they exist.
++
++  // Commented below check to fix download notifications in Sailfish Browser
++  /*
+   if (aDownload->mPrivate) {
+     return;
+   }
++  */
+ 
+   for (int32_t i = mListeners.Count() - 1; i >= 0; --i) {
+     mListeners[i]->OnDownloadStateChange(aOldState, aDownload);
+@@ -2268,9 +2272,13 @@ nsDownloadManager::NotifyListenersOnProgressChange(nsIWebProgress *aProgress,
+ 
+   // Only privacy-aware listeners should receive notifications about private
+   // downloads, while non-privacy-aware listeners receive no sign they exist.
++
++  // Commented below check to fix download notifications in Sailfish Browser
++  /*
+   if (aDownload->mPrivate) {
+     return;
+   }
++  */
+ 
+   for (int32_t i = mListeners.Count() - 1; i >= 0; --i) {
+     mListeners[i]->OnProgressChange(aProgress, aRequest, aCurSelfProgress,
+@@ -2293,9 +2301,13 @@ nsDownloadManager::NotifyListenersOnStateChange(nsIWebProgress *aProgress,
+ 
+   // Only privacy-aware listeners should receive notifications about private
+   // downloads, while non-privacy-aware listeners receive no sign they exist.
++
++  // Commented below check to fix download notifications in Sailfish Browser
++  /*
+   if (aDownload->mPrivate) {
+     return;
+   }
++  */
+ 
+   for (int32_t i = mListeners.Count() - 1; i >= 0; --i) {
+     mListeners[i]->OnStateChange(aProgress, aRequest, aStateFlags, aStatus,
+@@ -2876,34 +2888,27 @@ nsDownload::SetState(DownloadState aState)
+     case nsIDownloadManager::DOWNLOAD_DOWNLOADING:
+       // Only send the dl-start event to downloads that are actually starting.
+       if (oldState == nsIDownloadManager::DOWNLOAD_QUEUED) {
+-        if (!mPrivate)
+-          mDownloadManager->SendEvent(this, "dl-start");
++        mDownloadManager->SendEvent(this, "dl-start");
+       }
+       break;
+     case nsIDownloadManager::DOWNLOAD_FAILED:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-failed");
++      mDownloadManager->SendEvent(this, "dl-failed");
+       break;
+     case nsIDownloadManager::DOWNLOAD_SCANNING:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-scanning");
++      mDownloadManager->SendEvent(this, "dl-scanning");
+       break;
+     case nsIDownloadManager::DOWNLOAD_FINISHED:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-done");
++      mDownloadManager->SendEvent(this, "dl-done");
+       break;
+     case nsIDownloadManager::DOWNLOAD_BLOCKED_PARENTAL:
+     case nsIDownloadManager::DOWNLOAD_BLOCKED_POLICY:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-blocked");
++      mDownloadManager->SendEvent(this, "dl-blocked");
+       break;
+     case nsIDownloadManager::DOWNLOAD_DIRTY:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-dirty");
++      mDownloadManager->SendEvent(this, "dl-dirty");
+       break;
+     case nsIDownloadManager::DOWNLOAD_CANCELED:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-cancel");
++      mDownloadManager->SendEvent(this, "dl-cancel");
+       break;
+     default:
+       break;
+-- 
+2.4.3
+
