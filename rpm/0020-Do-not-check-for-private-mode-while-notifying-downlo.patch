@@ -1,0 +1,87 @@
+From e22c951453d6a0037e9a73ce78c6f573f90ca211 Mon Sep 17 00:00:00 2001
+From: Siteshwar Vashisht <siteshwar@gmail.com>
+Date: Mon, 9 Nov 2015 14:32:49 +0530
+Subject: [PATCH] Do not check for private mode while notifying download status
+
+---
+ toolkit/components/downloads/nsDownloadManager.cpp | 30 +++++++++++-----------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/toolkit/components/downloads/nsDownloadManager.cpp b/toolkit/components/downloads/nsDownloadManager.cpp
+index 7001851..a9076d4 100644
+--- a/toolkit/components/downloads/nsDownloadManager.cpp
++++ b/toolkit/components/downloads/nsDownloadManager.cpp
+@@ -2242,9 +2242,13 @@ nsDownloadManager::NotifyListenersOnDownloadStateChange(int16_t aOldState,
+ 
+   // Only privacy-aware listeners should receive notifications about private
+   // downloads, while non-privacy-aware listeners receive no sign they exist.
++
++  // Commented below check to fix download notifications in Sailfish Browser
++  /*
+   if (aDownload->mPrivate) {
+     return;
+   }
++  */
+ 
+   for (int32_t i = mListeners.Count() - 1; i >= 0; --i) {
+     mListeners[i]->OnDownloadStateChange(aOldState, aDownload);
+@@ -2268,10 +2272,13 @@ nsDownloadManager::NotifyListenersOnProgressChange(nsIWebProgress *aProgress,
+ 
+   // Only privacy-aware listeners should receive notifications about private
+   // downloads, while non-privacy-aware listeners receive no sign they exist.
++
++  // Commented below check to fix download notifications in Sailfish Browser
++  /*
+   if (aDownload->mPrivate) {
+     return;
+   }
+-
++  */
+   for (int32_t i = mListeners.Count() - 1; i >= 0; --i) {
+     mListeners[i]->OnProgressChange(aProgress, aRequest, aCurSelfProgress,
+                                     aMaxSelfProgress, aCurTotalProgress,
+@@ -2876,34 +2883,27 @@ nsDownload::SetState(DownloadState aState)
+     case nsIDownloadManager::DOWNLOAD_DOWNLOADING:
+       // Only send the dl-start event to downloads that are actually starting.
+       if (oldState == nsIDownloadManager::DOWNLOAD_QUEUED) {
+-        if (!mPrivate)
+-          mDownloadManager->SendEvent(this, "dl-start");
++        mDownloadManager->SendEvent(this, "dl-start");
+       }
+       break;
+     case nsIDownloadManager::DOWNLOAD_FAILED:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-failed");
++      mDownloadManager->SendEvent(this, "dl-failed");
+       break;
+     case nsIDownloadManager::DOWNLOAD_SCANNING:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-scanning");
++      mDownloadManager->SendEvent(this, "dl-scanning");
+       break;
+     case nsIDownloadManager::DOWNLOAD_FINISHED:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-done");
++      mDownloadManager->SendEvent(this, "dl-done");
+       break;
+     case nsIDownloadManager::DOWNLOAD_BLOCKED_PARENTAL:
+     case nsIDownloadManager::DOWNLOAD_BLOCKED_POLICY:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-blocked");
++      mDownloadManager->SendEvent(this, "dl-blocked");
+       break;
+     case nsIDownloadManager::DOWNLOAD_DIRTY:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-dirty");
++      mDownloadManager->SendEvent(this, "dl-dirty");
+       break;
+     case nsIDownloadManager::DOWNLOAD_CANCELED:
+-      if (!mPrivate)
+-        mDownloadManager->SendEvent(this, "dl-cancel");
++      mDownloadManager->SendEvent(this, "dl-cancel");
+       break;
+     default:
+       break;
+-- 
+2.4.3
+
