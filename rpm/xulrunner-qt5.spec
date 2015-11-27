@@ -185,6 +185,7 @@ echo "ac_add_options --with-float-abi=toolchain-default" >> "$MOZCONFIG"
 echo "ac_add_options --with-thumb=toolchain-default" >> "$MOZCONFIG"
 %endif
 
+echo "ac_add_options --enable-debug" >> "$MOZCONFIG"
 echo "mk_add_options MOZ_MAKE_FLAGS='%{?jobs:-j%jobs}'" >> "$MOZCONFIG"
 echo "mk_add_options MOZ_OBJDIR='%BUILD_DIR'" >> "$MOZCONFIG"
 # XXX: gold crashes when building gecko for both i486 and x86_64
