@@ -90,52 +90,11 @@ struct nsMyTrustedEVInfo
 // OCSP signing certificate, or OCSP for the intermediate certificates
 // isn't working, or OCSP isn't working at all.
 
-#ifdef DEBUG
-static const size_t NUM_TEST_EV_ROOTS = 2;
-#endif
-
 static struct nsMyTrustedEVInfo myTrustedEVInfos[] = {
   // IMPORTANT! When extending this list,
   // pairs of dotted_oid and oid_name should always be unique pairs.
   // In other words, if you add another list, that uses the same dotted_oid
   // as an existing entry, then please use the same oid_name.
-#ifdef DEBUG
-  // Debug EV certificates should all use the OID (repeating EV OID is OK):
-  // 1.3.6.1.4.1.13769.666.666.666.1.500.9.1.
-  // If you add or remove debug EV certs you must also modify NUM_TEST_EV_ROOTS
-  // so that the correct number of certs are skipped as these debug EV certs are
-  // NOT part of the default trust store.
-  {
-    // This is the testing EV signature (xpcshell) (RSA)
-    // CN=XPCShell EV Testing (untrustworthy) CA,OU=Security Engineering,O=Mozilla - EV debug test CA,L=Mountain View,ST=CA,C=US"
-    "1.3.6.1.4.1.13769.666.666.666.1.500.9.1",
-    "DEBUGtesting EV OID",
-    SEC_OID_UNKNOWN,
-    { 0x2D, 0x94, 0x52, 0x70, 0xAA, 0x92, 0x13, 0x0B, 0x1F, 0xB1, 0x24,
-      0x0B, 0x24, 0xB1, 0xEE, 0x4E, 0xFB, 0x7C, 0x43, 0x45, 0x45, 0x7F,
-      0x97, 0x6C, 0x90, 0xBF, 0xD4, 0x8A, 0x04, 0x79, 0xE4, 0x68 },
-    "MIGnMQswCQYDVQQGEwJVUzELMAkGA1UECAwCQ0ExFjAUBgNVBAcMDU1vdW50YWlu"
-    "IFZpZXcxIzAhBgNVBAoMGk1vemlsbGEgLSBFViBkZWJ1ZyB0ZXN0IENBMR0wGwYD"
-    "VQQLDBRTZWN1cml0eSBFbmdpbmVlcmluZzEvMC0GA1UEAwwmWFBDU2hlbGwgRVYg"
-    "VGVzdGluZyAodW50cnVzdHdvcnRoeSkgQ0E=",
-    "At+3zdo=",
-    nullptr
-  },
-  {
-    // The RSA root with an inadequate key size used for EV key size checking
-    // O=ev_root_rsa_2040,CN=XPCShell Key Size Testing rsa 2040-bit (EV)
-    "1.3.6.1.4.1.13769.666.666.666.1.500.9.1",
-    "DEBUGtesting EV OID",
-    SEC_OID_UNKNOWN,
-    { 0xA9, 0xCF, 0x93, 0x7B, 0x12, 0x9E, 0x39, 0xD2, 0x43, 0x10, 0x33,
-      0x6B, 0xC6, 0xAD, 0x86, 0xA2, 0x7A, 0x9D, 0xA4, 0x5B, 0x67, 0xB2,
-      0xB7, 0xC1, 0xDC, 0x47, 0x8E, 0xD8, 0xA9, 0x6E, 0x2D, 0x6A },
-    "MFExNDAyBgNVBAMMK1hQQ1NoZWxsIEtleSBTaXplIFRlc3RpbmcgcnNhIDIwNDAt"
-    "Yml0IChFVikxGTAXBgNVBAoMEGV2X3Jvb3RfcnNhXzIwNDA=",
-    "ASt16w==",
-    nullptr
-  },
-#endif
   {
     // OU=Security Communication EV RootCA1,O="SECOM Trust Systems CO.,LTD.",C=JP
     "1.2.392.200091.100.721.1",
@@ -1181,14 +1140,7 @@ IdentityInfoInit()
     // version of system NSS is installed). We will just silently avoid
     // treating that root cert as EV.
     if (!entry.cert) {
-#ifdef DEBUG
-      // The debug CA structs are at positions 0 to NUM_TEST_EV_ROOTS - 1, and
-      // are NOT in the NSS root DB.
-      if (iEV < NUM_TEST_EV_ROOTS) {
-        continue;
-      }
-#endif
-      PR_NOT_REACHED("Could not find EV root in NSS storage");
+      //PR_NOT_REACHED("Could not find EV root in NSS storage");
       continue;
     }
 
